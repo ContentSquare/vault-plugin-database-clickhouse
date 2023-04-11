@@ -1,0 +1,27 @@
+---
+builds:
+  - binary: clickhouse-database-plugin
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    flags:
+      - -tags=static
+    ldflags:
+      - -s
+      - -w
+      - -X github.com/contentsquare/vault-plugin-database-clickhouse/main.version={{ .Version }}
+    gcflags:
+      - -trimpath=.
+#dockers:
+#  - goos: linux
+#    goarch: amd64
+#    image_templates:
+#      - "harbor.eu-west-1.csq.io/docker-local/csq-go-cli:{{ .Version }}"
+snapshot:
+  name_template: "{{ .FullCommit }}-SNAPSHOT"
