@@ -16,7 +16,7 @@ builds:
     ldflags:
       - -s
       - -w
-      - -X github.com/contentsquare/vault-plugin-database-clickhouse/main.version={{ .Version }}
+      - -X main.version={{.Version}}
     gcflags:
       - -trimpath={{.Env.GOPATH}}
 snapshot:
