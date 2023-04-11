@@ -1,6 +1,7 @@
 ---
 builds:
   - binary: clickhouse-database-plugin
+    main: ./cmd/vault-plugin-database-clickhouse/
     env:
       - CGO_ENABLED=0
     goos:
@@ -17,6 +18,6 @@ builds:
       - -w
       - -X github.com/contentsquare/vault-plugin-database-clickhouse/main.version={{ .Version }}
     gcflags:
-      - -trimpath=.
+      - -trimpath={{.Env.GOPATH}}
 snapshot:
   name_template: "{{ .FullCommit }}-SNAPSHOT"
