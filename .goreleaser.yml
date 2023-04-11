@@ -1,0 +1,22 @@
+---
+builds:
+  - binary: clickhouse-database-plugin
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    flags:
+      - -tags=static
+    ldflags:
+      - -s
+      - -w
+      - -X github.com/contentsquare/vault-plugin-database-clickhouse/main.version={{ .Version }}
+    gcflags:
+      - -trimpath=.
+snapshot:
+  name_template: "{{ .FullCommit }}-SNAPSHOT"

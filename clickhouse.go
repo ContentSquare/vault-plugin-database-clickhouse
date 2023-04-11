@@ -3,40 +3,52 @@ package vault_plugin_database_clickhouse
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"fmt"
 	"strings"
 
+	_ "github.com/ClickHouse/clickhouse-go/v2"
 	"github.com/hashicorp/go-secure-stdlib/strutil"
 	dbplugin "github.com/hashicorp/vault/sdk/database/dbplugin/v5"
 	"github.com/hashicorp/vault/sdk/database/helper/dbutil"
 	"github.com/hashicorp/vault/sdk/helper/template"
+	"github.com/hashicorp/vault/sdk/logical"
 )
 
 const (
 	defaultClickhouseRevocationStmts = `
-		DROP USER '{{name}}';
+		DROP USER IF EXISTS '{{name}}';
 	`
 
 	defaultClickhouseRotateCredentialsSQL = `
-		ALTER USER '{{name}}' IDENTIFIED BY '{{password}}';
+		ALTER USER IF EXISTS '{{name}}' IDENTIFIED BY '{{password}}';
 	`
 	clickhouseTypeName = "clickhouse"
 
 	DefaultUserNameTemplate = `{{ printf "v-%s-%s-%s-%s" (.DisplayName | truncate 10) (.RoleName | truncate 10) (random 20) (unix_time) | truncate 32 }}`
 )
 
-var _ dbplugin.Database = (*Clickhouse)(nil)
+var (
+	_ dbplugin.Database       = (*Clickhouse)(nil)
+	_ logical.PluginVersioner = (*Clickhouse)(nil)
+)
 
 type Clickhouse struct {
 	*clickhouseConnectionProducer
 
 	usernameProducer        template.StringTemplate
 	defaultUsernameTemplate string
+
+	version string
+}
+
+func (c *Clickhouse) PluginVersion() logical.PluginVersion {
+	return logical.PluginVersion{
+		Version: c.version,
+	}
 }
 
 // New implements builtinplugins.BuiltinFactory
-func New(defaultUsernameTemplate string) func() (interface{}, error) {
+func New(defaultUsernameTemplate string, version string) func() (interface{}, error) {
 	return func() (interface{}, error) {
 		if defaultUsernameTemplate == "" {
 			return nil, fmt.Errorf("missing default username template")
@@ -45,6 +57,7 @@ func New(defaultUsernameTemplate string) func() (interface{}, error) {
 		// Wrap the plugin with middleware to sanitize errors
 		dbType := dbplugin.NewDatabaseErrorSanitizerMiddleware(db, db.SecretValues)
 
+		db.version = version
 		return dbType, nil
 	}
 }
@@ -126,7 +139,7 @@ func (c *Clickhouse) NewUser(ctx context.Context, req dbplugin.NewUserRequest) (
 		"expiration": expirationStr,
 	}
 
-	if err := c.executePreparedStatementsWithMap(ctx, req.Statements.Commands, queryMap); err != nil {
+	if err := c.executeStatementsWithMap(ctx, req.Statements.Commands, queryMap); err != nil {
 		return dbplugin.NewUserResponse{}, err
 	}
 
@@ -137,48 +150,19 @@ func (c *Clickhouse) NewUser(ctx context.Context, req dbplugin.NewUserRequest) (
 }
 
 func (c *Clickhouse) DeleteUser(ctx context.Context, req dbplugin.DeleteUserRequest) (dbplugin.DeleteUserResponse, error) {
-	// Grab the read lock
-	c.Lock()
-	defer c.Unlock()
-
-	// Get the connection
-	db, err := c.getConnection(ctx)
-	if err != nil {
-		return dbplugin.DeleteUserResponse{}, err
-	}
-
 	revocationStmts := req.Statements.Commands
-	// Use a default SQL statement for revocation if one cannot be fetched from the role
 	if len(revocationStmts) == 0 {
 		revocationStmts = []string{defaultClickhouseRevocationStmts}
 	}
 
-	// Start a transaction
-	tx, err := db.BeginTx(ctx, nil)
-	if err != nil {
+	queryMap := map[string]string{
+		"name":     req.Username,
+		"username": req.Username,
+	}
+	if err := c.executeStatementsWithMap(ctx, revocationStmts, queryMap); err != nil {
 		return dbplugin.DeleteUserResponse{}, err
 	}
-	defer tx.Rollback()
-
-	for _, stmt := range revocationStmts {
-		for _, query := range strutil.ParseArbitraryStringSlice(stmt, ";") {
-			query = strings.TrimSpace(query)
-			if len(query) == 0 {
-				continue
-			}
-
-			query = strings.ReplaceAll(query, "{{name}}", req.Username)
-			query = strings.ReplaceAll(query, "{{username}}", req.Username)
-			_, err = tx.ExecContext(ctx, query)
-			if err != nil {
-				return dbplugin.DeleteUserResponse{}, err
-			}
-		}
-	}
-
-	// Commit the transaction
-	err = tx.Commit()
-	return dbplugin.DeleteUserResponse{}, err
+	return dbplugin.DeleteUserResponse{}, nil
 }
 
 func (c *Clickhouse) UpdateUser(ctx context.Context, req dbplugin.UpdateUserRequest) (dbplugin.UpdateUserResponse, error) {
@@ -187,9 +171,19 @@ func (c *Clickhouse) UpdateUser(ctx context.Context, req dbplugin.UpdateUserRequ
 	}
 
 	if req.Password != nil {
-		err := c.changeUserPassword(ctx, req.Username, req.Password.NewPassword, req.Password.Statements.Commands)
-		if err != nil {
-			return dbplugin.UpdateUserResponse{}, fmt.Errorf("failed to change password: %w", err)
+		rotateStatments := req.Password.Statements.Commands
+		if len(rotateStatments) == 0 {
+			rotateStatments = []string{defaultClickhouseRotateCredentialsSQL}
+		}
+
+		queryMap := map[string]string{
+			"name":     req.Username,
+			"username": req.Username,
+			"password": req.Password.NewPassword,
+		}
+
+		if err := c.executeStatementsWithMap(ctx, rotateStatments, queryMap); err != nil {
+			return dbplugin.UpdateUserResponse{}, err
 		}
 	}
 
@@ -198,31 +192,10 @@ func (c *Clickhouse) UpdateUser(ctx context.Context, req dbplugin.UpdateUserRequ
 	return dbplugin.UpdateUserResponse{}, nil
 }
 
-func (c *Clickhouse) changeUserPassword(ctx context.Context, username, password string, rotateStatements []string) error {
-	if username == "" || password == "" {
-		return errors.New("must provide both username and password")
-	}
-
-	if len(rotateStatements) == 0 {
-		rotateStatements = []string{defaultClickhouseRotateCredentialsSQL}
-	}
-
-	queryMap := map[string]string{
-		"name":     username,
-		"username": username,
-		"password": password,
-	}
-
-	if err := c.executePreparedStatementsWithMap(ctx, rotateStatements, queryMap); err != nil {
-		return err
-	}
-	return nil
-}
-
-// executePreparedStatementsWithMap loops through the given templated SQL statements and
+// executeStatementsWithMap loops through the given templated SQL statements and
 // applies the map to them, interpolating values into the templates, returning
 // the resulting username and password
-func (c *Clickhouse) executePreparedStatementsWithMap(ctx context.Context, statements []string, queryMap map[string]string) error {
+func (c *Clickhouse) executeStatementsWithMap(ctx context.Context, statements []string, queryMap map[string]string) error {
 	// Grab the lock
 	c.Lock()
 	defer c.Unlock()
@@ -232,37 +205,18 @@ func (c *Clickhouse) executePreparedStatementsWithMap(ctx context.Context, state
 	if err != nil {
 		return err
 	}
-	// Start a transaction
-	tx, err := db.BeginTx(ctx, nil)
-	if err != nil {
-		return err
-	}
-	defer func() {
-		_ = tx.Rollback()
-	}()
-
-	// Execute each query
+	// Execute the statements
 	for _, stmt := range statements {
 		for _, query := range strutil.ParseArbitraryStringSlice(stmt, ";") {
 			query = strings.TrimSpace(query)
 			if len(query) == 0 {
 				continue
 			}
-
 			query = dbutil.QueryHelper(query, queryMap)
-
-			stmt, _ := tx.PrepareContext(ctx, query)
-			if _, err := stmt.ExecContext(ctx); err != nil {
-				stmt.Close()
-				return err
+			if _, err = db.ExecContext(ctx, query); err != nil {
+				return fmt.Errorf("unable to execute query. err=%v", err.Error())
 			}
-			stmt.Close()
 		}
-	}
-
-	// Commit the transaction
-	if err := tx.Commit(); err != nil {
-		return err
 	}
 	return nil
 }
