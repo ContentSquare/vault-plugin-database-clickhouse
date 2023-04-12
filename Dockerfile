@@ -1,4 +1,5 @@
-FROM hashicorp/vault:1.13.0
+ARG VAULT_VERSION
+FROM hashicorp/vault:${VAULT_VERSION}
 
 RUN mkdir /vault/plugins
 
