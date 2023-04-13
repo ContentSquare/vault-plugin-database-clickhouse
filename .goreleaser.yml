@@ -1,6 +1,8 @@
 ---
 env:
-  - VAULT_VERSION={{ if index .Env "VAULT_VERSION"  }}{{ .Env.VAULT_VERSION }}{{ else }}1.13.1{{ end }}
+  - VAULT111=1.11.9
+  - VAULT112=1.12.5
+  - VAULT113=1.13.1
 
 before:
   hooks:
@@ -24,29 +26,107 @@ builds:
     ldflags:
       - -s
       - -w
-      - -X main.version={{.Version}}
+      - -X main.version={{.Tag}}
     gcflags:
       - -trimpath={{.Env.GOPATH}}
 dockers:
+  ##############
+  #  VAULT 1.11
+  ##############
   - goos: linux
     goarch: amd64
     image_templates:
-      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT_VERSION }}-{{ .Tag }}"
-      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT_VERSION }}-latest"
-      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT_VERSION }}-latest-amd64"
-      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT_VERSION }}-{{ .Tag }}-amd64"
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT111 }}-{{ .Tag }}-amd64"
     use: buildx
     build_flag_templates:
       - "--platform=linux/amd64"
-      - "--build-arg=VAULT_VERSION={{.Env.VAULT_VERSION}}"
+      - "--build-arg=VAULT_VERSION={{.Env.VAULT111}}"
   - goos: linux
     goarch: arm64
     image_templates:
-      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT_VERSION }}-latest-arm64"
-      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT_VERSION }}-{{ .Tag }}-arm64"
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT111 }}-{{ .Tag }}-arm64"
     use: buildx
     build_flag_templates:
       - "--platform=linux/arm64"
-      - "--build-arg=VAULT_VERSION={{.Env.VAULT_VERSION}}"
+      - "--build-arg=VAULT_VERSION={{.Env.VAULT111}}"
+  ##############
+  #  VAULT 1.12
+  ##############
+  - goos: linux
+    goarch: amd64
+    image_templates:
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT112 }}-{{ .Tag }}-amd64"
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/amd64"
+      - "--build-arg=VAULT_VERSION={{.Env.VAULT112}}"
+  - goos: linux
+    goarch: arm64
+    image_templates:
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT112 }}-{{ .Tag }}-arm64"
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/arm64"
+      - "--build-arg=VAULT_VERSION={{.Env.VAULT112}}"
+  ##############
+  #  VAULT 1.13
+  ##############
+  - goos: linux
+    goarch: amd64
+    image_templates:
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT113 }}-{{ .Tag }}-amd64"
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/amd64"
+      - "--build-arg=VAULT_VERSION={{.Env.VAULT113}}"
+  - goos: linux
+    goarch: arm64
+    image_templates:
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT113 }}-{{ .Tag }}-arm64"
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/arm64"
+      - "--build-arg=VAULT_VERSION={{.Env.VAULT113}}"
+
+docker_manifests:
+  ##############
+  #  VAULT 1.11
+  ##############
+  - name_template: "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT111 }}-{{ .Tag }}"
+    image_templates:
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT111 }}-{{ .Tag }}-amd64"
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT111 }}-{{ .Tag }}-arm64"
+    skip_push: false
+  - name_template: "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT111 }}-latest"
+    image_templates:
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT111 }}-{{ .Tag }}-amd64"
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT111 }}-{{ .Tag }}-arm64"
+    skip_push: false
+  ##############
+  #  VAULT 1.12
+  ##############
+  - name_template: "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT112 }}-{{ .Tag }}"
+    image_templates:
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT112 }}-{{ .Tag }}-amd64"
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT112 }}-{{ .Tag }}-arm64"
+    skip_push: false
+  - name_template: "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT112 }}-latest"
+    image_templates:
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT112 }}-{{ .Tag }}-amd64"
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT112 }}-{{ .Tag }}-arm64"
+    skip_push: false
+  ##############
+  #  VAULT 1.13
+  ##############
+  - name_template: "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT113 }}-{{ .Tag }}"
+    image_templates:
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT113 }}-{{ .Tag }}-amd64"
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT113 }}-{{ .Tag }}-arm64"
+    skip_push: false
+  - name_template: "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT113 }}-latest"
+    image_templates:
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT113 }}-{{ .Tag }}-amd64"
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT113 }}-{{ .Tag }}-arm64"
+    skip_push: false
 snapshot:
   name_template: "{{ .FullCommit }}-SNAPSHOT"

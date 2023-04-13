@@ -12,16 +12,16 @@ permissions:
   contents: write
 
 jobs:
-  build:
+  goreleaser:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
       - name: Set up Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v4
         with:
           go-version: 1.20.3
 
@@ -30,38 +30,25 @@ jobs:
           sudo apt update
           sudo apt install -y gcc gcc-aarch64-linux-gnu musl build-essential
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
+        with:
+          platforms: linux/amd64,linux/arm64
 
-  docker-login:
-    runs-on: ubuntu-latest
-    steps:
       - name: Docker login
-        run: |
-          docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
-        env:
-          DOCKER_USERNAME: ${{ secrets.docker_username }}
-          DOCKER_PASSWORD: ${{ secrets.docker_password }}
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.docker_username }}
+          password: ${{ secrets.docker_password  }}
 
-  goreleaser:
-    runs-on: ubuntu-latest
-    needs:
-      - build
-      - docker-login
-
-    strategy:
-      matrix:
-        vault_version:
-          - "1.11.9"
-          - "1.12.5"
-          - "1.13.1"
-    steps:
-      - name: Run GoReleaser
+      - name: Run GoReleaser - Docker images
         uses: goreleaser/goreleaser-action@v4
         with:
           distribution: goreleaser
           args: release --debug
         env:
-          VAULT_VERSION: ${{ matrix.vault_version }}
           GOPATH: ${{ env.GOPATH }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
