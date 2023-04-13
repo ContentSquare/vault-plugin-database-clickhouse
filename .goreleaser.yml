@@ -1,4 +1,12 @@
 ---
+env:
+  - VAULT_VERSION={{ if index .Env "VAULT_VERSION"  }}{{ .Env.VAULT_VERSION }}{{ else }}1.13.1{{ end }}
+
+before:
+  hooks:
+    - go mod tidy
+    - go mod download
+
 builds:
   - binary: clickhouse-database-plugin
     main: ./cmd/vault-plugin-database-clickhouse/
@@ -16,8 +24,29 @@ builds:
     ldflags:
       - -s
       - -w
-      - -X github.com/contentsquare/vault-plugin-database-clickhouse/main.version={{ .Version }}
+      - -X main.version={{.Version}}
     gcflags:
       - -trimpath={{.Env.GOPATH}}
+dockers:
+  - goos: linux
+    goarch: amd64
+    image_templates:
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT_VERSION }}-{{ .Tag }}"
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT_VERSION }}-latest"
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT_VERSION }}-latest-amd64"
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT_VERSION }}-{{ .Tag }}-amd64"
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/amd64"
+      - "--build-arg=VAULT_VERSION={{.Env.VAULT_VERSION}}"
+  - goos: linux
+    goarch: arm64
+    image_templates:
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT_VERSION }}-latest-arm64"
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT_VERSION }}-{{ .Tag }}-arm64"
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/arm64"
+      - "--build-arg=VAULT_VERSION={{.Env.VAULT_VERSION}}"
 snapshot:
   name_template: "{{ .FullCommit }}-SNAPSHOT"
