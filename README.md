@@ -2,6 +2,13 @@
 
 This plugin provides clickhouse connectivity for clickhouse database using SQL user management
 
+Checkout [Docker Hub](https://hub.docker.com/r/contentsquareplatform/vault-plugin-database-clickhouse) for a docker image that embeds the pluging, versioned by current version of Vault
+
+* [vault 1.11](https://hub.docker.com/r/contentsquareplatform/vault-plugin-database-clickhouse/tags?page=1&name=1.11)
+* [vault 1.12](https://hub.docker.com/r/contentsquareplatform/vault-plugin-database-clickhouse/tags?page=1&name=1.12)
+* [vault 1.13](https://hub.docker.com/r/contentsquareplatform/vault-plugin-database-clickhouse/tags?page=1&name=1.13)
+
+
 # Build & Tests
 
 make test will run the whole test suite
