@@ -1,8 +1,8 @@
 ---
 env:
-  - VAULT111=1.11.9
-  - VAULT112=1.12.5
-  - VAULT113=1.13.1
+  - VAULT111=1.11.10
+  - VAULT112=1.12.6
+  - VAULT113=1.13.2
 
 before:
   hooks:
