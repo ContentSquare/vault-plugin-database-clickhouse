@@ -1,4 +1,4 @@
-# Clickhouse Databaase Secret Engine
+# Clickhouse Database Secret Engine
 
 This plugin provides clickhouse connectivity for clickhouse database using SQL user management
 
@@ -7,6 +7,13 @@ Checkout [Docker Hub](https://hub.docker.com/r/contentsquareplatform/vault-plugi
 * [vault 1.11](https://hub.docker.com/r/contentsquareplatform/vault-plugin-database-clickhouse/tags?page=1&name=1.11)
 * [vault 1.12](https://hub.docker.com/r/contentsquareplatform/vault-plugin-database-clickhouse/tags?page=1&name=1.12)
 * [vault 1.13](https://hub.docker.com/r/contentsquareplatform/vault-plugin-database-clickhouse/tags?page=1&name=1.13)
+
+# Plugin Sha256 (linux amd64 binary)
+
+| Version | Sha256                                                          |
+|---------|:----------------------------------------------------------------|
+| 0.1.0   | 6537135bdb3fab24ceb97a4f3d68308428558d75d1c67ef716790730485e8fce|
+| 0.1.1   | 18c7795c17db236b06351af89ea4d4f0dcbefa71ab9f56073be007ee5ccf3ae7|
 
 
 # Build & Tests
@@ -34,12 +41,14 @@ You will need to define a plugin directory using the `plugin_directory` configur
 
 Sample commands for registering and starting to use the plugin:
 
+note: sha256 could be found in the release page, per tag. Download the targz, and run the sha command against the right binary. 
+
 ```bash
 ~# SHA256=$(shasum -a 256 plugins/clickhouse-database-plugin | cut -d' ' -f1)
 
 ~# vault secrets enable database
 
-~# vault plugin enable -sha256=$SHA256 database clickhouse-database-plugin
+~# vault plugin register -sha256=$SHA256 database clickhouse-database-plugin
 ```
 
 At this stage you are now ready to initialize the plugin to connect to clickhouse cluster using unencrypted or encrypted communications.
