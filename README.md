@@ -7,6 +7,7 @@ Checkout [Docker Hub](https://hub.docker.com/r/contentsquareplatform/vault-plugi
 * [vault 1.11](https://hub.docker.com/r/contentsquareplatform/vault-plugin-database-clickhouse/tags?page=1&name=1.11)
 * [vault 1.12](https://hub.docker.com/r/contentsquareplatform/vault-plugin-database-clickhouse/tags?page=1&name=1.12)
 * [vault 1.13](https://hub.docker.com/r/contentsquareplatform/vault-plugin-database-clickhouse/tags?page=1&name=1.13)
+* [vault 1.14](https://hub.docker.com/r/contentsquareplatform/vault-plugin-database-clickhouse/tags?page=1&name=1.14)
 
 # Plugin Sha256 (linux amd64 binary)
 
@@ -14,6 +15,7 @@ Checkout [Docker Hub](https://hub.docker.com/r/contentsquareplatform/vault-plugi
 |---------|:----------------------------------------------------------------|
 | 0.1.0   | 6537135bdb3fab24ceb97a4f3d68308428558d75d1c67ef716790730485e8fce|
 | 0.1.1   | 18c7795c17db236b06351af89ea4d4f0dcbefa71ab9f56073be007ee5ccf3ae7|
+| 0.1.2   | 00fd995d848c0702f2f78151ebfb2724a0f94b88443a8362534e533ed1578b25|
 
 
 # Build & Tests
