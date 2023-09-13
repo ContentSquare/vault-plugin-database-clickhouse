@@ -1,8 +1,9 @@
 ---
 env:
-  - VAULT111=1.11.10
-  - VAULT112=1.12.6
-  - VAULT113=1.13.2
+  - VAULT111=1.11.12
+  - VAULT112=1.12.11
+  - VAULT113=1.13.7
+  - VAULT114=1.14.2
 
 before:
   hooks:
@@ -87,6 +88,25 @@ dockers:
     build_flag_templates:
       - "--platform=linux/arm64"
       - "--build-arg=VAULT_VERSION={{.Env.VAULT113}}"
+  ##############
+  #  VAULT 1.14
+  ##############
+  - goos: linux
+    goarch: amd64
+    image_templates:
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT114 }}-{{ .Tag }}-amd64"
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/amd64"
+      - "--build-arg=VAULT_VERSION={{.Env.VAULT114}}"
+  - goos: linux
+    goarch: arm64
+    image_templates:
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT114 }}-{{ .Tag }}-arm64"
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/arm64"
+      - "--build-arg=VAULT_VERSION={{.Env.VAULT114}}"
 
 docker_manifests:
   ##############
@@ -127,6 +147,19 @@ docker_manifests:
     image_templates:
       - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT113 }}-{{ .Tag }}-amd64"
       - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT113 }}-{{ .Tag }}-arm64"
+    skip_push: false
+  ##############
+  #  VAULT 1.14
+  ##############
+  - name_template: "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT114 }}-{{ .Tag }}"
+    image_templates:
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT114 }}-{{ .Tag }}-amd64"
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT114 }}-{{ .Tag }}-arm64"
+    skip_push: false
+  - name_template: "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT114 }}-latest"
+    image_templates:
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT114 }}-{{ .Tag }}-amd64"
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT114 }}-{{ .Tag }}-arm64"
     skip_push: false
 snapshot:
   name_template: "{{ .FullCommit }}-SNAPSHOT"
