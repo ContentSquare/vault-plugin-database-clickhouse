@@ -19,7 +19,7 @@ require (
 	github.com/armon/go-metrics v0.4.1 // indirect
 	github.com/armon/go-radix v1.0.0 // indirect
 	github.com/cenkalti/backoff/v3 v3.2.2 // indirect
-	github.com/containerd/containerd v1.7.0 // indirect
+	github.com/containerd/containerd v1.7.11 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/docker/distribution v2.8.2+incompatible // indirect
 	github.com/docker/docker v24.0.5+incompatible // indirect
@@ -68,20 +68,19 @@ require (
 	github.com/ryanuber/go-glob v1.0.0 // indirect
 	github.com/segmentio/asm v1.2.0 // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect
-	github.com/sirupsen/logrus v1.9.0 // indirect
-	go.opentelemetry.io/otel v1.16.0 // indirect
-	go.opentelemetry.io/otel/trace v1.16.0 // indirect
+	github.com/sirupsen/logrus v1.9.3 // indirect
+	go.opentelemetry.io/otel v1.19.0 // indirect
+	go.opentelemetry.io/otel/trace v1.19.0 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
-	golang.org/x/crypto v0.11.0 // indirect
-	golang.org/x/mod v0.9.0 // indirect
-	golang.org/x/net v0.13.0 // indirect
-	golang.org/x/sync v0.2.0 // indirect
-	golang.org/x/sys v0.11.0 // indirect
-	golang.org/x/text v0.11.0 // indirect
+	golang.org/x/crypto v0.14.0 // indirect
+	golang.org/x/mod v0.11.0 // indirect
+	golang.org/x/net v0.17.0 // indirect
+	golang.org/x/sys v0.13.0 // indirect
+	golang.org/x/text v0.13.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
-	golang.org/x/tools v0.7.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20230530153820-e85fd2cbaebc // indirect
-	google.golang.org/grpc v1.55.0 // indirect
+	golang.org/x/tools v0.10.0 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20230711160842-782d3b101e98 // indirect
+	google.golang.org/grpc v1.58.3 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
