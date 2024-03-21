@@ -3,7 +3,7 @@ env:
   - VAULT111=1.11.12
   - VAULT112=1.12.11
   - VAULT113=1.13.13
-  - VAULT114=1.14.19
+  - VAULT114=1.14.10
   - VAULT115=1.15.6
 
 before:
