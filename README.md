@@ -8,7 +8,8 @@ Checkout [Docker Hub](https://hub.docker.com/r/contentsquareplatform/vault-plugi
 * [vault 1.12](https://hub.docker.com/r/contentsquareplatform/vault-plugin-database-clickhouse/tags?page=1&name=1.12)
 * [vault 1.13](https://hub.docker.com/r/contentsquareplatform/vault-plugin-database-clickhouse/tags?page=1&name=1.13)
 * [vault 1.14](https://hub.docker.com/r/contentsquareplatform/vault-plugin-database-clickhouse/tags?page=1&name=1.14)
-* [vault 1.15](https://hub.docker.com/r/contentsquareplatform/vault-plugin-database-clickhouse/tags?page=1&name=1.14)
+* [vault 1.15](https://hub.docker.com/r/contentsquareplatform/vault-plugin-database-clickhouse/tags?page=1&name=1.15)
+* [vault 1.16](https://hub.docker.com/r/contentsquareplatform/vault-plugin-database-clickhouse/tags?page=1&name=1.16)
 
 # Plugin Sha256 (linux amd64 binary)
 

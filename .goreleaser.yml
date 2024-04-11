@@ -5,6 +5,7 @@ env:
   - VAULT113=1.13.13
   - VAULT114=1.14.10
   - VAULT115=1.15.6
+  - VAULT116=1.16.1
 
 before:
   hooks:
@@ -127,7 +128,25 @@ dockers:
     build_flag_templates:
       - "--platform=linux/arm64"
       - "--build-arg=VAULT_VERSION={{.Env.VAULT115}}"
-
+  ##############
+  #  VAULT 1.16
+  ##############
+  - goos: linux
+    goarch: amd64
+    image_templates:
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT116 }}-{{ .Tag }}-amd64"
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/amd64"
+      - "--build-arg=VAULT_VERSION={{.Env.VAULT116}}"
+  - goos: linux
+    goarch: arm64
+    image_templates:
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT116 }}-{{ .Tag }}-arm64"
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/arm64"
+      - "--build-arg=VAULT_VERSION={{.Env.VAULT116}}"
 docker_manifests:
   ##############
   #  VAULT 1.11
@@ -193,6 +212,19 @@ docker_manifests:
     image_templates:
       - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT115 }}-{{ .Tag }}-amd64"
       - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT115 }}-{{ .Tag }}-arm64"
+    skip_push: false
+  ##############
+  #  VAULT 1.16
+  ##############
+  - name_template: "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT116 }}-{{ .Tag }}"
+    image_templates:
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT116 }}-{{ .Tag }}-amd64"
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT116 }}-{{ .Tag }}-arm64"
+    skip_push: false
+  - name_template: "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT116 }}-latest"
+    image_templates:
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT116 }}-{{ .Tag }}-amd64"
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT116 }}-{{ .Tag }}-arm64"
     skip_push: false
 snapshot:
   name_template: "{{ .FullCommit }}-SNAPSHOT"
