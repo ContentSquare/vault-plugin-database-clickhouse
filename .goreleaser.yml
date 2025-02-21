@@ -1,11 +1,15 @@
 ---
+version: 2
 env:
   - VAULT111=1.11.12
   - VAULT112=1.12.11
   - VAULT113=1.13.13
   - VAULT114=1.14.10
   - VAULT115=1.15.6
-  - VAULT116=1.16.1
+  - VAULT116=1.16.3
+  - VAULT117=1.17.6
+  - VAULT118=1.18.4
+  - SOURCE_DATE_EPOCH=1609459200
 
 before:
   hooks:
@@ -24,14 +28,18 @@ builds:
     goarch:
       - amd64
       - arm64
+    mod_timestamp: '{{ .CommitTimestamp }}'
     flags:
       - -tags=static
     ldflags:
       - -s
       - -w
+      - -buildid= # Removes non-deterministic build ID
       - -X main.version={{.Tag}}
+      - -X main.commit={{.Commit}}
+      - -X main.date={{.CommitDate}}
     gcflags:
-      - -trimpath={{.Env.GOPATH}}
+      - all=-trimpath={{.Env.GOPATH}}
 dockers:
   ##############
   #  VAULT 1.11
@@ -44,6 +52,7 @@ dockers:
     build_flag_templates:
       - "--platform=linux/amd64"
       - "--build-arg=VAULT_VERSION={{.Env.VAULT111}}"
+      - "--build-arg=SOURCE_DATE_EPOCH={{.Env.SOURCE_DATE_EPOCH }}"
   - goos: linux
     goarch: arm64
     image_templates:
@@ -52,6 +61,7 @@ dockers:
     build_flag_templates:
       - "--platform=linux/arm64"
       - "--build-arg=VAULT_VERSION={{.Env.VAULT111}}"
+      - "--build-arg=SOURCE_DATE_EPOCH={{.Env.SOURCE_DATE_EPOCH }}"
   ##############
   #  VAULT 1.12
   ##############
@@ -63,6 +73,7 @@ dockers:
     build_flag_templates:
       - "--platform=linux/amd64"
       - "--build-arg=VAULT_VERSION={{.Env.VAULT112}}"
+      - "--build-arg=SOURCE_DATE_EPOCH={{.Env.SOURCE_DATE_EPOCH }}"
   - goos: linux
     goarch: arm64
     image_templates:
@@ -71,6 +82,7 @@ dockers:
     build_flag_templates:
       - "--platform=linux/arm64"
       - "--build-arg=VAULT_VERSION={{.Env.VAULT112}}"
+      - "--build-arg=SOURCE_DATE_EPOCH={{.Env.SOURCE_DATE_EPOCH }}"
   ##############
   #  VAULT 1.13
   ##############
@@ -82,6 +94,7 @@ dockers:
     build_flag_templates:
       - "--platform=linux/amd64"
       - "--build-arg=VAULT_VERSION={{.Env.VAULT113}}"
+      - "--build-arg=SOURCE_DATE_EPOCH={{.Env.SOURCE_DATE_EPOCH }}"
   - goos: linux
     goarch: arm64
     image_templates:
@@ -90,6 +103,7 @@ dockers:
     build_flag_templates:
       - "--platform=linux/arm64"
       - "--build-arg=VAULT_VERSION={{.Env.VAULT113}}"
+      - "--build-arg=SOURCE_DATE_EPOCH={{.Env.SOURCE_DATE_EPOCH }}"
   ##############
   #  VAULT 1.14
   ##############
@@ -101,6 +115,7 @@ dockers:
     build_flag_templates:
       - "--platform=linux/amd64"
       - "--build-arg=VAULT_VERSION={{.Env.VAULT114}}"
+      - "--build-arg=SOURCE_DATE_EPOCH={{.Env.SOURCE_DATE_EPOCH }}"
   - goos: linux
     goarch: arm64
     image_templates:
@@ -109,6 +124,7 @@ dockers:
     build_flag_templates:
       - "--platform=linux/arm64"
       - "--build-arg=VAULT_VERSION={{.Env.VAULT114}}"
+      - "--build-arg=SOURCE_DATE_EPOCH={{.Env.SOURCE_DATE_EPOCH }}"
   ##############
   #  VAULT 1.15
   ##############
@@ -120,6 +136,7 @@ dockers:
     build_flag_templates:
       - "--platform=linux/amd64"
       - "--build-arg=VAULT_VERSION={{.Env.VAULT115}}"
+      - "--build-arg=SOURCE_DATE_EPOCH={{.Env.SOURCE_DATE_EPOCH }}"
   - goos: linux
     goarch: arm64
     image_templates:
@@ -128,6 +145,7 @@ dockers:
     build_flag_templates:
       - "--platform=linux/arm64"
       - "--build-arg=VAULT_VERSION={{.Env.VAULT115}}"
+      - "--build-arg=SOURCE_DATE_EPOCH={{.Env.SOURCE_DATE_EPOCH }}"
   ##############
   #  VAULT 1.16
   ##############
@@ -139,6 +157,7 @@ dockers:
     build_flag_templates:
       - "--platform=linux/amd64"
       - "--build-arg=VAULT_VERSION={{.Env.VAULT116}}"
+      - "--build-arg=SOURCE_DATE_EPOCH={{.Env.SOURCE_DATE_EPOCH }}"
   - goos: linux
     goarch: arm64
     image_templates:
@@ -147,6 +166,49 @@ dockers:
     build_flag_templates:
       - "--platform=linux/arm64"
       - "--build-arg=VAULT_VERSION={{.Env.VAULT116}}"
+      - "--build-arg=SOURCE_DATE_EPOCH={{.Env.SOURCE_DATE_EPOCH }}"
+  ##############
+  #  VAULT 1.17
+  ##############
+  - goos: linux
+    goarch: amd64
+    image_templates:
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT117 }}-{{ .Tag }}-amd64"
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/amd64"
+      - "--build-arg=VAULT_VERSION={{.Env.VAULT117 }}"
+      - "--build-arg=SOURCE_DATE_EPOCH={{.Env.SOURCE_DATE_EPOCH }}"
+  - goos: linux
+    goarch: arm64
+    image_templates:
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT117 }}-{{ .Tag }}-arm64"
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/arm64"
+      - "--build-arg=VAULT_VERSION={{.Env.VAULT117 }}"
+      - "--build-arg=SOURCE_DATE_EPOCH={{.Env.SOURCE_DATE_EPOCH }}"
+  ##############
+  #  VAULT 1.18
+  ##############
+  - goos: linux
+    goarch: amd64
+    image_templates:
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT118 }}-{{ .Tag }}-amd64"
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/amd64"
+      - "--build-arg=VAULT_VERSION={{.Env.VAULT118 }}"
+      - "--build-arg=SOURCE_DATE_EPOCH={{.Env.SOURCE_DATE_EPOCH }}"
+  - goos: linux
+    goarch: arm64
+    image_templates:
+      - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT118 }}-{{ .Tag }}-arm64"
+    use: buildx
+    build_flag_templates:
+      - "--platform=linux/arm64"
+      - "--build-arg=VAULT_VERSION={{.Env.VAULT118 }}"
+      - "--build-arg=SOURCE_DATE_EPOCH={{.Env.SOURCE_DATE_EPOCH }}"
 docker_manifests:
   ##############
   #  VAULT 1.11
@@ -227,4 +289,24 @@ docker_manifests:
       - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT116 }}-{{ .Tag }}-arm64"
     skip_push: false
 snapshot:
-  name_template: "{{ .FullCommit }}-SNAPSHOT"
+  version_template: '{{ .FullCommit }}-SNAPSHOT'
+# archives:
+#   - id: default
+#     name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ with .Arm }}v{{ . }}{{ end }}{{ with .Mips }}_{{ . }}{{ end }}{{ if not (eq .Amd64 "v1") }}{{ .Amd64 }}{{ end }}'
+#     formats:
+#       - tar.gz
+#     files:
+#       - src: LICENCE*
+#       - src: README*
+#   - id: clickhouse-database-plugin-binary
+#     name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ with .Arm }}v{{ . }}{{ end }}{{ with .Mips }}_{{ . }}{{ end }}{{ if not (eq .Amd64 "v1") }}{{ .Amd64 }}{{ end }}'
+#     formats:
+#       - binary
+
+# checksum:
+#   algorithm: sha256
+#   ids:
+#     - clickhouse-database-plugin-binary
+# release:
+#   ids:
+#     - default
