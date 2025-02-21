@@ -10,6 +10,8 @@ Checkout [Docker Hub](https://hub.docker.com/r/contentsquareplatform/vault-plugi
 * [vault 1.14](https://hub.docker.com/r/contentsquareplatform/vault-plugin-database-clickhouse/tags?page=1&name=1.14)
 * [vault 1.15](https://hub.docker.com/r/contentsquareplatform/vault-plugin-database-clickhouse/tags?page=1&name=1.15)
 * [vault 1.16](https://hub.docker.com/r/contentsquareplatform/vault-plugin-database-clickhouse/tags?page=1&name=1.16)
+* [vault 1.17](https://hub.docker.com/r/contentsquareplatform/vault-plugin-database-clickhouse/tags?page=1&name=1.17)
+* [vault 1.18](https://hub.docker.com/r/contentsquareplatform/vault-plugin-database-clickhouse/tags?page=1&name=1.18)
 
 # Plugin Sha256 (linux amd64 binary)
 
@@ -19,6 +21,7 @@ Checkout [Docker Hub](https://hub.docker.com/r/contentsquareplatform/vault-plugi
 | 0.1.1   | 18c7795c17db236b06351af89ea4d4f0dcbefa71ab9f56073be007ee5ccf3ae7|
 | 0.1.2   | 00fd995d848c0702f2f78151ebfb2724a0f94b88443a8362534e533ed1578b25|
 | 0.1.3   | e4c9039b5dc221728d146c807ba891be2dc92782e4c148a3eda37333b6642379|
+| 0.1.4   | 4571b9709fd3cc9e7c7d4f561fa4ba6541fb1f827b2a59081162b342553a3b0e|
 
 
 # Build & Tests
@@ -268,4 +271,3 @@ Query id: 15553c58-9b60-41ce-a19a-f0ff38b35cd8
 
 clickhouse-server:9000|default :)
 ```
-
