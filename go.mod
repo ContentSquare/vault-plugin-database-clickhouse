@@ -3,7 +3,7 @@ module github.com/vfoucault/vault-plugin-database-clickhouse
 go 1.22.1
 
 require (
-	github.com/ClickHouse/clickhouse-go/v2 v2.8.3
+	github.com/ClickHouse/clickhouse-go/v2 v2.34.0
 	github.com/hashicorp/go-secure-stdlib/parseutil v0.1.7
 	github.com/hashicorp/go-secure-stdlib/strutil v0.1.2
 	github.com/hashicorp/vault/sdk v0.9.2
