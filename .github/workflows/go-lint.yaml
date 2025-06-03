@@ -1,12 +1,12 @@
 ---
-name: Tests
+name: Lint
 
 on:
   workflow_dispatch:
   push:
 
 jobs:
-  tests:
+  golangci-lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -16,8 +16,7 @@ jobs:
         with:
           go-version-file: 'go.mod'
 
-      - name: Install gotestsum
-        run: go install gotest.tools/gotestsum@v1.12.2
-
-      - name: Test
-        run: gotestsum --format github-actions
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v8
+        with:
+          version: v2.1.5

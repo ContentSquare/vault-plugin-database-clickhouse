@@ -3,7 +3,6 @@ package clickhousehelper
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"net/url"
 	"os"
 	"testing"
@@ -39,8 +38,8 @@ func PrepareTestContainer(t *testing.T, useTLS bool, adminUser, adminPassword st
 		ImageTag:      imageVersion,
 		ContainerName: "clickhouse-server",
 		Env: []string{
-			fmt.Sprintf("CLICKHOUSE_USER=%s", adminUser),
-			fmt.Sprintf("CLICKHOUSE_PASSWORD=%s", adminPassword),
+			"CLICKHOUSE_USER=" + adminUser,
+			"CLICKHOUSE_PASSWORD=" + adminPassword,
 			"CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT=1",
 		},
 		CopyFromTo:      extraCopy,
@@ -86,11 +85,11 @@ func PrepareTestContainer(t *testing.T, useTLS bool, adminUser, adminPassword st
 }
 
 func TestCredsExist(t testing.TB, connURL string) error {
-
 	db, err := sql.Open("clickhouse", connURL)
 	if err != nil {
 		return err
 	}
 	defer db.Close()
+
 	return db.Ping()
 }

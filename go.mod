@@ -1,4 +1,4 @@
-module github.com/vfoucault/vault-plugin-database-clickhouse
+module github.com/contentsquare/vault-plugin-database-clickhouse
 
 go 1.22.1
 
