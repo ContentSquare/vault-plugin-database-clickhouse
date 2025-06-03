@@ -1,7 +1,6 @@
 package vault_plugin_database_clickhouse
 
 import (
-	"context"
 	"fmt"
 	"net/url"
 	"testing"
@@ -146,7 +145,7 @@ func testInitialize(t *testing.T, adminUser, adminPassword string) {
 		t.Run(name, func(t *testing.T) {
 			db := newClickhouse(DefaultUserNameTemplate)
 			defer dbtesting.AssertClose(t, db)
-			initResp, err := db.Initialize(context.Background(), test.initRequest)
+			initResp, err := db.Initialize(t.Context(), test.initRequest)
 			if test.expectErr && err == nil {
 				t.Fatalf("err expected, got nil")
 			}
@@ -275,10 +274,10 @@ func TestClickhouse_NewUser(t *testing.T) {
 
 			db := newClickhouse(DefaultUserNameTemplate)
 			defer db.Close()
-			_, err := db.Initialize(context.Background(), initReq)
+			_, err := db.Initialize(t.Context(), initReq)
 			require.NoError(t, err)
 
-			userResp, err := db.NewUser(context.Background(), test.newUserReq)
+			userResp, err := db.NewUser(t.Context(), test.newUserReq)
 			if test.expectErr && err == nil {
 				t.Fatalf("err expected, got nil")
 			}
@@ -380,11 +379,11 @@ func TestClickhouse_DeleteUser(t *testing.T) {
 
 			db := newClickhouse(DefaultUserNameTemplate)
 			defer db.Close()
-			_, err := db.Initialize(context.Background(), initReq)
+			_, err := db.Initialize(t.Context(), initReq)
 			require.NoError(t, err)
 
 			// Create User
-			userResp, err := db.NewUser(context.Background(), test.newUserReq)
+			userResp, err := db.NewUser(t.Context(), test.newUserReq)
 			if test.expectErr && err == nil {
 				t.Fatalf("err expected, got nil")
 			}
@@ -407,7 +406,7 @@ func TestClickhouse_DeleteUser(t *testing.T) {
 
 			// Update delete request
 			test.delUserReq.Username = userResp.Username
-			_, err = db.DeleteUser(context.Background(), test.delUserReq)
+			_, err = db.DeleteUser(t.Context(), test.delUserReq)
 			if err != nil {
 				t.Fatalf("no error expected. got: %s", err)
 			}
@@ -491,11 +490,11 @@ func TestClickhouse_UpdateUser(t *testing.T) {
 
 			db := newClickhouse(DefaultUserNameTemplate)
 			defer db.Close()
-			_, err := db.Initialize(context.Background(), initReq)
+			_, err := db.Initialize(t.Context(), initReq)
 			require.NoError(t, err)
 
 			// Create User
-			userResp, err := db.NewUser(context.Background(), test.newUserReq)
+			userResp, err := db.NewUser(t.Context(), test.newUserReq)
 			if err != nil {
 				t.Fatalf("err expected, got nil")
 			}
@@ -515,7 +514,7 @@ func TestClickhouse_UpdateUser(t *testing.T) {
 
 			// Update user request
 			test.updUserReq.Username = userResp.Username
-			_, err = db.UpdateUser(context.Background(), test.updUserReq)
+			_, err = db.UpdateUser(t.Context(), test.updUserReq)
 			if test.expectErr && err == nil {
 				t.Fatalf("err expected, got nil")
 			}

@@ -50,7 +50,7 @@ func PrepareTestContainer(t *testing.T, useTLS bool, adminUser, adminPassword st
 		t.Fatalf("could not start docker clickhouse: %s", err)
 	}
 
-	svc, err := runner.StartService(context.Background(), func(ctx context.Context, host string, port int) (docker.ServiceConfig, error) {
+	svc, err := runner.StartService(t.Context(), func(ctx context.Context, host string, port int) (docker.ServiceConfig, error) {
 		hostIP := docker.NewServiceHostPort(host, port)
 		q := make(url.Values)
 		q.Set("username", adminUser)
