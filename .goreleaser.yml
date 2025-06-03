@@ -1,4 +1,5 @@
 ---
+version: 2
 env:
   - VAULT111=1.11.12
   - VAULT112=1.12.11
@@ -227,4 +228,4 @@ docker_manifests:
       - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT116 }}-{{ .Tag }}-arm64"
     skip_push: false
 snapshot:
-  name_template: "{{ .FullCommit }}-SNAPSHOT"
+  version_template: "{{ .FullCommit }}-SNAPSHOT"
