@@ -23,16 +23,16 @@ Checkout [Docker Hub](https://hub.docker.com/r/contentsquareplatform/vault-plugi
 
 # Build & Tests
 
-make test will run the whole test suite
+run the whole test suite
 
 ```bash
-~# make test
+~# go test ./...
 ```
 
-make build will run build the corresponding plugin for the current os/arch
+go build will run build the corresponding plugin for the current os/arch
 
 ```bash
-~# make build
+~# go build ./...
 ```
 
 ## Installation
