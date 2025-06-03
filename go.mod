@@ -1,6 +1,6 @@
 module github.com/contentsquare/vault-plugin-database-clickhouse
 
-go 1.22.1
+go 1.24.3
 
 require (
 	github.com/ClickHouse/clickhouse-go/v2 v2.8.3
