@@ -22,7 +22,7 @@ func PrepareTestContainer(t *testing.T, useTLS bool, adminUser, adminPassword st
 		return func() {}, os.Getenv("CLICKHOUSE_URL")
 	}
 
-	imageVersion := "25.4.3.22-alpine"
+	imageVersion := "22.1.4.30-alpine"
 	extraCopy := map[string]string{}
 	ports := []string{"9000/tcp"}
 	if useTLS {
