@@ -16,7 +16,7 @@ require (
 	cloud.google.com/go/auth/oauth2adapt v0.2.7 // indirect
 	cloud.google.com/go/cloudsqlconn v1.4.3 // indirect
 	cloud.google.com/go/compute/metadata v0.6.0 // indirect
-	github.com/ClickHouse/ch-go v0.52.1 // indirect
+	github.com/ClickHouse/ch-go v0.65.0 // indirect
 	github.com/Microsoft/go-winio v0.6.2 // indirect
 	github.com/andybalholm/brotli v1.0.5 // indirect
 	github.com/armon/go-metrics v0.4.1 // indirect
@@ -32,7 +32,7 @@ require (
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/frankban/quicktest v1.14.3 // indirect
 	github.com/go-faster/city v1.0.1 // indirect
-	github.com/go-faster/errors v0.6.1 // indirect
+	github.com/go-faster/errors v0.7.1 // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
@@ -88,7 +88,7 @@ require (
 	github.com/paulmach/orb v0.9.0 // indirect
 	github.com/petermattis/goid v0.0.0-20240813172612-4fcff4a6cae7 // indirect
 	github.com/pierrec/lz4 v2.6.1+incompatible // indirect
-	github.com/pierrec/lz4/v4 v4.1.17 // indirect
+	github.com/pierrec/lz4/v4 v4.1.22 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/robfig/cron/v3 v3.0.1 // indirect
