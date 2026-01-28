@@ -6,18 +6,13 @@ on:
   push:
 
 jobs:
-  tests:
-    runs-on: ubuntu-latest
+  tests:    
+    runs-on: ubuntu24-large
     steps:
       - uses: actions/checkout@v6
 
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version-file: 'go.mod'
-
-      - name: Install gotestsum
-        run: go install gotest.tools/gotestsum@v1.12.2
+      - name: Install dependencies
+        uses: jdx/mise-action@v3
 
       - name: Test
-        run: gotestsum --format github-actions
+        run: mise run go:test

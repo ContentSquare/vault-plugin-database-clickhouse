@@ -32,7 +32,7 @@ builds:
       - -w
       - -X main.version={{.Tag}}
     gcflags:
-      - -trimpath={{.Env.GOPATH}}
+      - -trimpath={{.Env.GOROOT}}
 dockers:
   ##############
   #  VAULT 1.11

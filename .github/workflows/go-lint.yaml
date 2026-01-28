@@ -6,17 +6,13 @@ on:
   push:
 
 jobs:
-  golangci-lint:
-    runs-on: ubuntu-latest
+  golangci-lint:    
+    runs-on: ubuntu24-large
     steps:
       - uses: actions/checkout@v6
 
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version-file: 'go.mod'
+      - name: Install dependencies
+        uses: jdx/mise-action@v3
 
       - name: golangci-lint
-        uses: golangci/golangci-lint-action@v8
-        with:
-          version: v2.1.5
+        run: mise run go:lint

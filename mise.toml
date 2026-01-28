@@ -1,0 +1,17 @@
+[tools]
+go = "1.25.6"
+golangci-lint = "2.8.0"
+goreleaser = "2.13.3"
+gotestsum = "1.13.0"
+
+[tasks."go:lint"]
+description = "Run golangci-lint"
+run = "	golangci-lint run -c .golangci.yml ./... --timeout 120s"
+
+[tasks."go:test"]
+description = "Run Go tests with gotestsum"
+run = "gotestsum --format github-actions"  
+
+[tasks."go:release"]
+description = "Create a new release"
+run = ["goreleaser release --debug"]
