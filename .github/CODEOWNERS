@@ -1,0 +1,6 @@
+# CODEOWNERS documentation: https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-on-github/about-code-owners
+
+* @ContentSquare/devx
+
+# Protect .github/agents folder for GitHub Copilot agents
+/.github/agents/ @ContentSquare/devx
