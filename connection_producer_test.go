@@ -120,6 +120,7 @@ func Test_connStringBuilder_buildConnectionString(t *testing.T) {
 			got, err := c.BuildConnectionString()
 			if (err != nil) != tt.wantErr {
 				t.Errorf("BuildConnectionString() error = %v, wantErr %v", err, tt.wantErr)
+
 				return
 			}
 			if got != tt.want {
@@ -284,6 +285,7 @@ func TestNewConnStringBuilderFromConnString(t *testing.T) {
 			got, err := NewConnStringBuilderFromConnString(tt.args.connString)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("NewConnStringBuilderFromConnString() error = %v, wantErr %v", err, tt.wantErr)
+
 				return
 			}
 			if !reflect.DeepEqual(got, tt.want) {

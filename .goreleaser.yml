@@ -289,24 +289,4 @@ docker_manifests:
       - "contentsquareplatform/vault-plugin-database-clickhouse:{{ .Env.VAULT116 }}-{{ .Tag }}-arm64"
     skip_push: false
 snapshot:
-  version_template: '{{ .FullCommit }}-SNAPSHOT'
-# archives:
-#   - id: default
-#     name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ with .Arm }}v{{ . }}{{ end }}{{ with .Mips }}_{{ . }}{{ end }}{{ if not (eq .Amd64 "v1") }}{{ .Amd64 }}{{ end }}'
-#     formats:
-#       - tar.gz
-#     files:
-#       - src: LICENCE*
-#       - src: README*
-#   - id: clickhouse-database-plugin-binary
-#     name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ with .Arm }}v{{ . }}{{ end }}{{ with .Mips }}_{{ . }}{{ end }}{{ if not (eq .Amd64 "v1") }}{{ .Amd64 }}{{ end }}'
-#     formats:
-#       - binary
-
-# checksum:
-#   algorithm: sha256
-#   ids:
-#     - clickhouse-database-plugin-binary
-# release:
-#   ids:
-#     - default
+  version_template: "{{ .FullCommit }}-SNAPSHOT"

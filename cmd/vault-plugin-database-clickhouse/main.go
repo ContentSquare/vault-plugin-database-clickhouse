@@ -4,8 +4,8 @@ import (
 	"log"
 	"os"
 
+	clickhouse "github.com/contentsquare/vault-plugin-database-clickhouse"
 	"github.com/hashicorp/vault/sdk/database/dbplugin/v5"
-	clickhouse "github.com/vfoucault/vault-plugin-database-clickhouse"
 )
 
 var (
@@ -22,8 +22,7 @@ func main() {
 
 // Run instantiates a clickhouse object, and runs the RPC server for the plugin
 func Run() error {
-	var f func() (interface{}, error)
-	f = clickhouse.New(clickhouse.DefaultUserNameTemplate, version)
+	f := clickhouse.New(clickhouse.DefaultUserNameTemplate, version)
 
 	dbplugin.ServeMultiplex(f)
 

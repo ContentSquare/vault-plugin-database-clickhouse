@@ -3,6 +3,7 @@ package vault_plugin_database_clickhouse
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"strings"
 
@@ -18,8 +19,8 @@ const (
 	defaultClickhouseRevocationStmts = `
 		DROP USER IF EXISTS '{{name}}';
 	`
-
-	defaultClickhouseRotateCredentialsSQL = `
+	//nolint:gosec
+	defaultClickhouseRotateCredentialsSQL = ` 
 		ALTER USER IF EXISTS '{{name}}' IDENTIFIED BY '{{password}}';
 	`
 	clickhouseTypeName = "clickhouse"
@@ -51,13 +52,14 @@ func (c *Clickhouse) PluginVersion() logical.PluginVersion {
 func New(defaultUsernameTemplate string, version string) func() (interface{}, error) {
 	return func() (interface{}, error) {
 		if defaultUsernameTemplate == "" {
-			return nil, fmt.Errorf("missing default username template")
+			return nil, errors.New("missing default username template")
 		}
 		db := newClickhouse(defaultUsernameTemplate)
 		// Wrap the plugin with middleware to sanitize errors
 		dbType := dbplugin.NewDatabaseErrorSanitizerMiddleware(db, db.SecretValues)
 
 		db.version = version
+
 		return dbType, nil
 	}
 }
@@ -146,6 +148,7 @@ func (c *Clickhouse) NewUser(ctx context.Context, req dbplugin.NewUserRequest) (
 	resp := dbplugin.NewUserResponse{
 		Username: username,
 	}
+
 	return resp, nil
 }
 
@@ -162,12 +165,13 @@ func (c *Clickhouse) DeleteUser(ctx context.Context, req dbplugin.DeleteUserRequ
 	if err := c.executeStatementsWithMap(ctx, revocationStmts, queryMap); err != nil {
 		return dbplugin.DeleteUserResponse{}, err
 	}
+
 	return dbplugin.DeleteUserResponse{}, nil
 }
 
 func (c *Clickhouse) UpdateUser(ctx context.Context, req dbplugin.UpdateUserRequest) (dbplugin.UpdateUserResponse, error) {
 	if req.Password == nil && req.Expiration == nil {
-		return dbplugin.UpdateUserResponse{}, fmt.Errorf("no change requested")
+		return dbplugin.UpdateUserResponse{}, errors.New("no change requested")
 	}
 
 	if req.Password != nil {
@@ -218,5 +222,6 @@ func (c *Clickhouse) executeStatementsWithMap(ctx context.Context, statements []
 			}
 		}
 	}
+
 	return nil
 }

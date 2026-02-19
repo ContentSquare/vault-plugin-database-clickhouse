@@ -3,7 +3,6 @@ package clickhousehelper
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"net/url"
 	"os"
 	"testing"
@@ -23,7 +22,7 @@ func PrepareTestContainer(t *testing.T, useTLS bool, adminUser, adminPassword st
 		return func() {}, os.Getenv("CLICKHOUSE_URL")
 	}
 
-	imageVersion := "22-alpine"
+	imageVersion := "22.1.4.30-alpine"
 	extraCopy := map[string]string{}
 	ports := []string{"9000/tcp"}
 	if useTLS {
@@ -39,8 +38,8 @@ func PrepareTestContainer(t *testing.T, useTLS bool, adminUser, adminPassword st
 		ImageTag:      imageVersion,
 		ContainerName: "clickhouse-server",
 		Env: []string{
-			fmt.Sprintf("CLICKHOUSE_USER=%s", adminUser),
-			fmt.Sprintf("CLICKHOUSE_PASSWORD=%s", adminPassword),
+			"CLICKHOUSE_USER=" + adminUser,
+			"CLICKHOUSE_PASSWORD=" + adminPassword,
 			"CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT=1",
 		},
 		CopyFromTo:      extraCopy,
@@ -51,7 +50,7 @@ func PrepareTestContainer(t *testing.T, useTLS bool, adminUser, adminPassword st
 		t.Fatalf("could not start docker clickhouse: %s", err)
 	}
 
-	svc, err := runner.StartService(context.Background(), func(ctx context.Context, host string, port int) (docker.ServiceConfig, error) {
+	svc, err := runner.StartService(t.Context(), func(ctx context.Context, host string, port int) (docker.ServiceConfig, error) {
 		hostIP := docker.NewServiceHostPort(host, port)
 		q := make(url.Values)
 		q.Set("username", adminUser)
@@ -86,11 +85,11 @@ func PrepareTestContainer(t *testing.T, useTLS bool, adminUser, adminPassword st
 }
 
 func TestCredsExist(t testing.TB, connURL string) error {
-
 	db, err := sql.Open("clickhouse", connURL)
 	if err != nil {
 		return err
 	}
 	defer db.Close()
+
 	return db.Ping()
 }

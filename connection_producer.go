@@ -3,6 +3,7 @@ package vault_plugin_database_clickhouse
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"net/url"
 	"strconv"
@@ -42,6 +43,7 @@ type clickhouseConnectionProducer struct {
 
 func (c *clickhouseConnectionProducer) Initialize(ctx context.Context, conf map[string]interface{}, verifyConnection bool) error {
 	_, err := c.Init(ctx, conf, verifyConnection)
+
 	return err
 }
 
@@ -56,7 +58,7 @@ func (c *clickhouseConnectionProducer) Init(ctx context.Context, conf map[string
 	}
 
 	if len(c.ConnectionURL) == 0 {
-		return nil, fmt.Errorf("connection_url cannot be empty")
+		return nil, errors.New("connection_url cannot be empty")
 	}
 
 	// ConnBuilder
@@ -129,7 +131,7 @@ func (c *clickhouseConnectionProducer) Connection(ctx context.Context) (interfac
 		}
 		// If the ping was unsuccessful, close it and ignore errors as we'll be
 		// reestablishing anyways
-		c.db.Close()
+		c.db.Close() //nolint:gosec
 	}
 	var err error
 	c.db, err = sql.Open("clickhouse", c.ConnectionURL)
@@ -159,7 +161,7 @@ func (c *clickhouseConnectionProducer) Close() error {
 	defer c.Unlock()
 
 	if c.db != nil {
-		c.db.Close()
+		c.db.Close() //nolint:gosec
 	}
 
 	c.db = nil
@@ -181,37 +183,44 @@ type connStringBuilder struct {
 
 func (c *connStringBuilder) WithHost(host string) *connStringBuilder {
 	c.host = host
+
 	return c
 }
 
 func (c *connStringBuilder) WithPort(port int) *connStringBuilder {
 	c.port = port
+
 	return c
 }
 
 func (c *connStringBuilder) WithDatabase(database string) *connStringBuilder {
 	c.database = database
+
 	return c
 }
 
 func (c *connStringBuilder) WithTLS(skipVerify bool) *connStringBuilder {
 	c.tls = true
 	c.tlsSkipVerify = skipVerify
+
 	return c
 }
 
 func (c *connStringBuilder) WithDebug() *connStringBuilder {
 	c.debug = true
+
 	return c
 }
 
 func (c *connStringBuilder) WithUsername(username string) *connStringBuilder {
 	c.username = username
+
 	return c
 }
 
 func (c *connStringBuilder) WithPassword(password string) *connStringBuilder {
 	c.password = password
+
 	return c
 }
 
@@ -228,7 +237,7 @@ func NewConnStringBuilderFromConnString(connString string) (*connStringBuilder, 
 	if c.port, err = strconv.Atoi(split[1]); err != nil {
 		return nil, fmt.Errorf("unable to parse port. got=%s. err=%v", split[1], err.Error())
 	}
-	c.database = strings.Replace(parsed.Path, "/", "", -1)
+	c.database = strings.ReplaceAll(parsed.Path, "/", "")
 	for k, v := range parsed.Query() {
 		switch k {
 		case "debug":
@@ -257,6 +266,7 @@ func NewConnStringBuilderFromConnString(connString string) (*connStringBuilder, 
 			c.extra[k] = v[0]
 		}
 	}
+
 	return c, nil
 }
 
@@ -293,19 +303,21 @@ func (c *connStringBuilder) BuildConnectionString() (string, error) {
 		RawQuery: q.Encode(),
 		Path:     c.database,
 	}).String()
+
 	return dsn, nil
 }
 
 func (c *connStringBuilder) Check() error {
-	var errors []error
+	var errs []error
 	if c.host == "" {
-		errors = append(errors, fmt.Errorf("host is missing"))
+		errs = append(errs, errors.New("host is missing"))
 	}
 	if c.port == 0 {
-		errors = append(errors, fmt.Errorf("port is missing"))
+		errs = append(errs, errors.New("port is missing"))
 	}
-	if len(errors) > 0 {
-		return fmt.Errorf("check errors: %v", errors)
+	if len(errs) > 0 {
+		return fmt.Errorf("check errors: %v", errs)
 	}
+
 	return nil
 }

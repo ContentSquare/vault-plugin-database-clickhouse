@@ -38,24 +38,30 @@ func cenCACertificates(savePath string) error {
 		return err
 	}
 	caPEM := new(bytes.Buffer)
-	pem.Encode(caPEM, &pem.Block{
+	err = pem.Encode(caPEM, &pem.Block{
 		Type:  "CERTIFICATE",
 		Bytes: caBytes,
 	})
-
-	caPrivKeyPEM := new(bytes.Buffer)
-	pem.Encode(caPrivKeyPEM, &pem.Block{
-		Type:  "RSA PRIVATE KEY",
-		Bytes: x509.MarshalPKCS1PrivateKey(caPrivKey),
-	})
-
-	// saveToDisk
-	cwd, _ := os.Getwd()
-	err = os.WriteFile(path.Join(cwd, savePath, "local_ca.crt"), caPEM.Bytes(), 0644)
 	if err != nil {
 		return err
 	}
-	err = os.WriteFile(path.Join(cwd, savePath, "local_ca.key"), caPrivKeyPEM.Bytes(), 0644)
+
+	caPrivKeyPEM := new(bytes.Buffer)
+	err = pem.Encode(caPrivKeyPEM, &pem.Block{
+		Type:  "RSA PRIVATE KEY",
+		Bytes: x509.MarshalPKCS1PrivateKey(caPrivKey),
+	})
+	if err != nil {
+		return err
+	}
+
+	// saveToDisk
+	cwd, _ := os.Getwd()
+	err = os.WriteFile(path.Join(cwd, savePath, "local_ca.crt"), caPEM.Bytes(), 0600)
+	if err != nil {
+		return err
+	}
+	err = os.WriteFile(path.Join(cwd, savePath, "local_ca.key"), caPrivKeyPEM.Bytes(), 0600)
 	if err != nil {
 		return err
 	}
@@ -83,22 +89,28 @@ func cenCACertificates(savePath string) error {
 		return err
 	}
 	certPEM := new(bytes.Buffer)
-	pem.Encode(certPEM, &pem.Block{
+	err = pem.Encode(certPEM, &pem.Block{
 		Type:  "CERTIFICATE",
 		Bytes: certBytes,
 	})
-
-	certPrivKeyPEM := new(bytes.Buffer)
-	pem.Encode(certPrivKeyPEM, &pem.Block{
-		Type:  "RSA PRIVATE KEY",
-		Bytes: x509.MarshalPKCS1PrivateKey(certPrivKey),
-	})
-	// saveToDisk
-	err = os.WriteFile(path.Join(savePath, "localnode.crt"), certPEM.Bytes(), 0644)
 	if err != nil {
 		return err
 	}
-	err = os.WriteFile(path.Join(savePath, "localnode.key"), certPrivKeyPEM.Bytes(), 0644)
+
+	certPrivKeyPEM := new(bytes.Buffer)
+	err = pem.Encode(certPrivKeyPEM, &pem.Block{
+		Type:  "RSA PRIVATE KEY",
+		Bytes: x509.MarshalPKCS1PrivateKey(certPrivKey),
+	})
+	if err != nil {
+		return err
+	}
+	// saveToDisk
+	err = os.WriteFile(path.Join(savePath, "localnode.crt"), certPEM.Bytes(), 0600)
+	if err != nil {
+		return err
+	}
+	err = os.WriteFile(path.Join(savePath, "localnode.key"), certPrivKeyPEM.Bytes(), 0600)
 	if err != nil {
 		return err
 	}
