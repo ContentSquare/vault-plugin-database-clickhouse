@@ -21,7 +21,7 @@ jobs:
           fetch-depth: 0
 
       - name: Set up Go
-        uses: ContentSquare/actions-setup-go@approved-v5
+        uses: ContentSquare/actions-setup-go@approved-v6
         with:
           go-version-file: 'go.mod'
 
@@ -31,10 +31,10 @@ jobs:
           sudo apt install -y gcc gcc-aarch64-linux-gnu musl build-essential
 
       - name: Set up QEMU
-        uses: ContentSquare/docker-setup-qemu-action@approved-v3
+        uses: ContentSquare/docker-setup-qemu-action@approved-v4
 
       - name: Set up Docker Buildx
-        uses: ContentSquare/docker-setup-buildx-action@approved-v3
+        uses: ContentSquare/docker-setup-buildx-action@approved-v4
         with:
           platforms: linux/amd64,linux/arm64
 

@@ -12,11 +12,11 @@ jobs:
       - uses: ContentSquare/actions-checkout@approved-v6
 
       - name: Set up Go
-        uses: ContentSquare/actions-setup-go@approved-v5
+        uses: ContentSquare/actions-setup-go@approved-v6
         with:
           go-version-file: 'go.mod'
 
       - name: golangci-lint
-        uses: contentsquare/golangci-golangci-lint-action@approved-v8
+        uses: ContentSquare/golangci-golangci-lint-action@approved-v9
         with:
           version: v2.1.5
