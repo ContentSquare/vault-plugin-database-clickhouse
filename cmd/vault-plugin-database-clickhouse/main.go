@@ -8,8 +8,13 @@ import (
 	"github.com/hashicorp/vault/sdk/database/dbplugin/v5"
 )
 
+// version is the plugin version reported to Vault (e.g. via `vault plugin
+// list`). Vault validates it as strict semver, so the default must stay a
+// plain numeric version. Override it at build time with:
+//
+//	-ldflags "-X main.version=X.Y.Z"
 var (
-	version string
+	version = "0.0.0"
 )
 
 func main() {

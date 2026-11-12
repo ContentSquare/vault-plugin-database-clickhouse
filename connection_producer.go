@@ -13,9 +13,10 @@ import (
 
 	_ "github.com/ClickHouse/clickhouse-go/v2"
 	"github.com/hashicorp/go-secure-stdlib/parseutil"
-	"github.com/hashicorp/vault/sdk/database/helper/connutil"
 	"github.com/mitchellh/mapstructure"
 )
+
+var errNotInitialized = errors.New("connection has not been initialized")
 
 // clickhouseConnectionProducer implements ConnectionProducer and provides a generic producer for most sql databases
 type clickhouseConnectionProducer struct {
@@ -121,7 +122,7 @@ func (c *clickhouseConnectionProducer) Init(ctx context.Context, conf map[string
 
 func (c *clickhouseConnectionProducer) Connection(ctx context.Context) (interface{}, error) {
 	if !c.Initialized {
-		return nil, connutil.ErrNotInitialized
+		return nil, errNotInitialized
 	}
 
 	// If we already have a DB, test it and return
