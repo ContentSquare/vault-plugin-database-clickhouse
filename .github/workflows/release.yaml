@@ -48,7 +48,7 @@ jobs:
         uses: goreleaser/goreleaser-action@v6
         with:
           distribution: goreleaser
-          version: "2.9.0"
+          version: "v2.20.3"
           args: release --debug
         env:
           GOPATH: ${{ env.GOPATH }}
